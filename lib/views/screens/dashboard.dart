@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:plant_app/data/data_item.dart';
 import 'package:plant_app/models/plant_model.dart';
 import 'package:plant_app/views/screens/home.dart';
 import 'package:plant_app/views/screens/saved.dart';
@@ -27,12 +26,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       body: Builder(builder: (_) {
         List pages = [
-          HomeScreen(
-            item: DataItem(listData: savedData),
-          ),
-          SavedScreen(
-            item: DataItem(listData: savedData),
-          ),
+          const HomeScreen(),
+          const SavedScreen(),
         ];
 
         return pages[currentIndex];

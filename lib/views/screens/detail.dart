@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:plant_app/data/app_state.dart';
 import 'package:plant_app/models/plant_model.dart';
 import 'package:plant_app/views/components/c_text.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +8,15 @@ class DetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final plants = ModalRoute.of(context)!.settings.arguments as Plant;
+    final data = ModalRoute.of(context)!.settings.arguments as Map;
+    Plant plants = data["data"] as Plant;
+    int i = data["i"] as int;
+
     return Scaffold(
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          if (constraints.maxWidth < 600 &&
-              (Platform.isAndroid || Platform.isIOS)) {
-            return DetailMobile(plants: plants);
+          if (constraints.maxWidth < 600) {
+            return DetailMobile(plants: plants, i: i);
           } else {
             return DetailWeb(plants: plants);
           }
@@ -68,7 +69,7 @@ class DetailWeb extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 320),
-                            const FavoriteButton(),
+                            // const FavoriteButton(),
                           ],
                         ),
                       ),
@@ -80,37 +81,37 @@ class DetailWeb extends StatelessWidget {
                           children: [
                             CText(text: plants.name, size: 20),
                             const SizedBox(height: 15),
-                            Row(
-                              children: <Widget>[
-                                const Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                  size: 16,
-                                ),
-                                const SizedBox(height: 7),
-                                CText(text: plants.rating),
-                              ],
-                            ),
+                            // Row(
+                            //   children: <Widget>[
+                            //     const Icon(
+                            //       Icons.star,
+                            //       color: Colors.yellow,
+                            //       size: 16,
+                            //     ),
+                            //     const SizedBox(height: 7),
+                            //     CText(text: plants.rating),
+                            //   ],
+                            // ),
                             const SizedBox(height: 15),
-                            CText(
-                              text: plants.price,
-                              size: 17,
-                              color: Colors.indigo,
-                            ),
+                            // CText(
+                            //   text: plants.price,
+                            //   size: 17,
+                            //   color: Colors.indigo,
+                            // ),
                             const SizedBox(height: 15),
-                            Row(
-                              children: [
-                                const CText(
-                                  text: 'Size:   ',
-                                  weight: FontWeight.bold,
-                                  size: 16,
-                                ),
-                                CText(
-                                  text: plants.size,
-                                  color: Colors.teal.shade700,
-                                ),
-                              ],
-                            ),
+                            // Row(
+                            //   children: [
+                            //     const CText(
+                            //       text: 'Size:   ',
+                            //       weight: FontWeight.bold,
+                            //       size: 16,
+                            //     ),
+                            //     CText(
+                            //       text: plants.size,
+                            //       color: Colors.teal.shade700,
+                            //     ),
+                            //   ],
+                            // ),
                             const SizedBox(height: 20),
                             const CText(
                               text: 'Description',
@@ -161,15 +162,25 @@ class DetailWeb extends StatelessWidget {
   }
 }
 
-class DetailMobile extends StatelessWidget {
+class DetailMobile extends StatefulWidget {
   final Plant plants;
+  final int i;
+
   const DetailMobile({
     Key? key,
     required this.plants,
+    required this.i,
   }) : super(key: key);
 
   @override
+  State<DetailMobile> createState() => _DetailMobileState();
+}
+
+class _DetailMobileState extends State<DetailMobile> {
+  @override
   Widget build(BuildContext context) {
+    bool isLike = widget.plants.isLike;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -177,7 +188,7 @@ class DetailMobile extends StatelessWidget {
           children: <Widget>[
             Stack(
               children: <Widget>[
-                Image.asset(plants.imgAsset),
+                Image.asset(widget.plants.imgAsset),
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -196,7 +207,45 @@ class DetailMobile extends StatelessWidget {
                             },
                           ),
                         ),
-                        const FavoriteButton(),
+                        IconButton(
+                          icon: Icon(
+                            isLike ? Icons.favorite : Icons.favorite_border,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              isLike = !isLike;
+                              AppState().likeDislike(widget.i);
+                              if (isLike) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.black,
+                                    duration: Duration(seconds: 2),
+                                    content: CText(
+                                      text: 'Adding to saved data',
+                                      size: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.black,
+                                    duration: Duration(seconds: 2),
+                                    content: CText(
+                                      text: 'Remove to saved data',
+                                      size: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                );
+                              }
+                            });
+                          },
+                        )
                       ],
                     ),
                   ),
@@ -209,40 +258,44 @@ class DetailMobile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CText(
-                    text: plants.name,
+                    text: widget.plants.name,
                     color: Colors.black,
                     size: 18,
                   ),
-                  Row(
-                    children: <Widget>[
-                      const Icon(
-                        Icons.star,
-                        color: Colors.yellow,
-                        size: 14,
-                      ),
-                      const SizedBox(height: 5),
-                      CText(
-                        text: plants.rating,
-                        size: 14,
-                      )
-                    ],
-                  ),
+                  // Row(
+                  //   children: <Widget>[
+                  //     const Icon(
+                  //       Icons.star,
+                  //       color: Colors.yellow,
+                  //       size: 14,
+                  //     ),
+                  //     const SizedBox(height: 5),
+                  //     CText(
+                  //       text: widget.plants.rating,
+                  //       size: 14,
+                  //     )
+                  //   ],
+                  // ),
                   const SizedBox(height: 7),
-                  CText(text: plants.price, size: 17, color: Colors.indigo),
+                  // CText(
+                  //   text: widget.plants.price,
+                  //   size: 17,
+                  //   color: Colors.indigo,
+                  // ),
                   const SizedBox(height: 7),
-                  Row(
-                    children: [
-                      const CText(
-                        text: 'Size:   ',
-                        weight: FontWeight.bold,
-                        size: 16,
-                      ),
-                      CText(
-                        text: plants.size,
-                        color: Colors.teal.shade700,
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     const CText(
+                  //       text: 'Size:   ',
+                  //       weight: FontWeight.bold,
+                  //       size: 16,
+                  //     ),
+                  //     CText(
+                  //       text: widget.plants.size,
+                  //       color: Colors.teal.shade700,
+                  //     ),
+                  //   ],
+                  // ),
                   const SizedBox(height: 7),
                   const CText(
                     text: 'Description',
@@ -251,30 +304,30 @@ class DetailMobile extends StatelessWidget {
                   ),
                   const SizedBox(height: 7),
                   CText(
-                    text: plants.desc,
+                    text: widget.plants.desc,
                     color: Colors.grey,
                     size: 13,
                   ),
                   const SizedBox(height: 30),
-                  Container(
-                    height: 40,
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green.shade900,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const CText(
-                        text: 'Add to chart ',
-                        size: 19,
-                        weight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   height: 40,
+                  //   width: double.infinity,
+                  //   padding: const EdgeInsets.symmetric(horizontal: 10),
+                  //   child: ElevatedButton(
+                  //     onPressed: () {},
+                  //     style: ElevatedButton.styleFrom(
+                  //       backgroundColor: Colors.green.shade900,
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(10),
+                  //       ),
+                  //     ),
+                  //     child: const CText(
+                  //       text: 'Add to chart ',
+                  //       size: 19,
+                  //       weight: FontWeight.bold,
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(height: 20),
                 ],
               ),
@@ -282,32 +335,6 @@ class DetailMobile extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class FavoriteButton extends StatefulWidget {
-  const FavoriteButton({Key? key}) : super(key: key);
-
-  @override
-  State<FavoriteButton> createState() => _FavoriteButtonState();
-}
-
-class _FavoriteButtonState extends State<FavoriteButton> {
-  bool _isFavorite = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        _isFavorite ? Icons.favorite : Icons.favorite_border,
-        color: Colors.red,
-      ),
-      onPressed: () {
-        setState(() {
-          _isFavorite = !_isFavorite;
-        });
-      },
     );
   }
 }

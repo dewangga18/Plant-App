@@ -1,22 +1,16 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:plant_app/data/data_item.dart';
+import 'package:plant_app/data/app_state.dart';
+import 'package:plant_app/models/plant_model.dart';
+import 'package:plant_app/views/components/c_text.dart';
 
 class SavedScreen extends StatelessWidget {
-  final DataItem item;
-  
-  const SavedScreen({
-    Key? key,
-    required this.item,
-  }) : super(key: key);
+  const SavedScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        if (constraints.maxWidth < 600 &&
-            (Platform.isAndroid || Platform.isIOS)) {
+        if (constraints.maxWidth < 600) {
           return const SavedMobile();
         } else {
           return const SavedWeb();
@@ -31,7 +25,22 @@ class SavedMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    List<Plant> plants = AppState().plantList;
+
+    if (plants.isEmpty) {
+      return Container();
+    }
+
+    return Scaffold(
+      body: ListView.builder(
+        itemCount: plants.where((item) => item.isLike).length,
+        itemBuilder: (_, i) {
+          var item = plants.where((data) => data.isLike).elementAt(i);
+
+          return CText(text: item.name);
+        },
+      ),
+    );
   }
 }
 

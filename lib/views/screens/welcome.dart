@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:plant_app/configs/routes/app_route.dart';
 import 'package:plant_app/configs/constants/app_asset.dart';
@@ -12,8 +11,7 @@ class WelcomeScreen extends StatelessWidget {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         /// separated view
-        if (constraints.maxWidth < 600 &&
-            (Platform.isAndroid || Platform.isIOS)) {
+        if (constraints.maxWidth < 600 ) {
           return _mainMobile(context);
         } else {
           return _mainWeb(context);

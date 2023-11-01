@@ -1,14 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:plant_app/configs/routes/app_route.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isAndroid || Platform.isIOS) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  }
   runApp(const MyApp());
 }
 

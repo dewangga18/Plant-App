@@ -8,6 +8,7 @@ class CText extends StatelessWidget {
   final FontWeight? weight;
   final TextOverflow? overflow;
   final bool softWrap;
+  final int? maxLines;
 
   const CText({
     Key? key,
@@ -19,6 +20,7 @@ class CText extends StatelessWidget {
     this.overflow,
     this.wordSpacing,
     this.letterSpacing,
+    this.maxLines,
   }) : super(key: key);
 
   @override
@@ -34,6 +36,7 @@ class CText extends StatelessWidget {
       ),
       softWrap: softWrap,
       overflow: overflow,
+      maxLines: maxLines,
     );
   }
 }

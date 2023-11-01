@@ -1,20 +1,19 @@
 import 'dart:io';
 
-import 'package:plant_app/components/c_text.dart';
-import 'package:plant_app/model/plant.dart';
+import 'package:plant_app/models/plant_model.dart';
+import 'package:plant_app/views/components/c_text.dart';
 import 'package:flutter/material.dart';
 
-class Detail extends StatelessWidget {
-  final Plant plants;
-  
-  const Detail({Key? key, required this.plants}) : super(key: key);
+class DetailScreen extends StatelessWidget {
+  const DetailScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final plants = ModalRoute.of(context)!.settings.arguments as Plant;
     return Scaffold(
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          if (constraints.maxWidth < 600&&
+          if (constraints.maxWidth < 600 &&
               (Platform.isAndroid || Platform.isIOS)) {
             return DetailMobile(plants: plants);
           } else {
@@ -52,7 +51,8 @@ class DetailWeb extends StatelessWidget {
                         child: Image.asset(plants.imgAsset),
                       ),
                       Positioned(
-                        left: 20, top: 20,
+                        left: 20,
+                        top: 20,
                         child: Row(
                           children: [
                             CircleAvatar(
@@ -73,7 +73,8 @@ class DetailWeb extends StatelessWidget {
                         ),
                       ),
                       Positioned(
-                        left: 450, top: 50,
+                        left: 450,
+                        top: 50,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -94,17 +95,15 @@ class DetailWeb extends StatelessWidget {
                             CText(
                               text: plants.price,
                               size: 17,
-                              color: Colors.indigo
+                              color: Colors.indigo,
                             ),
                             const SizedBox(height: 15),
                             Row(
                               children: [
-                                const Text(
-                                  'Size:   ',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
+                                const CText(
+                                  text: 'Size:   ',
+                                  weight: FontWeight.bold,
+                                  size: 16,
                                 ),
                                 CText(
                                   text: plants.size,
@@ -113,12 +112,10 @@ class DetailWeb extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 20),
-                            const Text(
-                              'Description',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
+                            const CText(
+                              text: 'Description',
+                              weight: FontWeight.bold,
+                              size: 20,
                             ),
                             const SizedBox(height: 15),
                             CText(
@@ -130,7 +127,8 @@ class DetailWeb extends StatelessWidget {
                         ),
                       ),
                       Positioned(
-                        left: 440, top: 350,
+                        left: 440,
+                        top: 350,
                         child: Container(
                           height: 40,
                           width: 300,
@@ -143,12 +141,10 @@ class DetailWeb extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            child: const Text(
-                              'Add to chart ',
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            child: const CText(
+                              text: 'Add to chart ',
+                              size: 19,
+                              weight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -236,8 +232,10 @@ class DetailMobile extends StatelessWidget {
                   const SizedBox(height: 7),
                   Row(
                     children: [
-                      const Text('Size:   ',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      const CText(
+                        text: 'Size:   ',
+                        weight: FontWeight.bold,
+                        size: 16,
                       ),
                       CText(
                         text: plants.size,
@@ -246,9 +244,10 @@ class DetailMobile extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 7),
-                  const Text(
-                    'Description',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  const CText(
+                    text: 'Description',
+                    weight: FontWeight.bold,
+                    size: 20,
                   ),
                   const SizedBox(height: 7),
                   CText(
@@ -269,9 +268,10 @@ class DetailMobile extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text(
-                        'Add to chart ',
-                        style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                      child: const CText(
+                        text: 'Add to chart ',
+                        size: 19,
+                        weight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -290,8 +290,7 @@ class FavoriteButton extends StatefulWidget {
   const FavoriteButton({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _FavoriteButtonState createState() => _FavoriteButtonState();
+  State<FavoriteButton> createState() => _FavoriteButtonState();
 }
 
 class _FavoriteButtonState extends State<FavoriteButton> {

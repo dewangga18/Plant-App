@@ -56,7 +56,7 @@ class _HomeMobileState extends State<HomeMobile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 60),
+            const SizedBox(height: 40),
             const CText(text: 'Hello', size: 18),
             CText(
               text: 'Plant Lovers!',
@@ -86,7 +86,7 @@ class _HomeMobileState extends State<HomeMobile> {
                                 keySearch = '';
                               });
                               Future.delayed(
-                                const Duration(milliseconds: 500),
+                                const Duration(milliseconds: 450),
                                 () {
                                   setState(() => searchActivate = false);
                                 },
@@ -99,14 +99,19 @@ class _HomeMobileState extends State<HomeMobile> {
                               setState(() {
                                 witdth =
                                     MediaQuery.of(context).size.width * 0.8;
-                                searchActivate = true;
                                 index = 0;
                                 listSearch = AppState().plantList;
-                                Future.delayed(
-                                  const Duration(milliseconds: 500),
-                                  () => focus.requestFocus(),
-                                );
                               });
+                              Future.delayed(
+                                const Duration(milliseconds: 500),
+                                () => focus.requestFocus(),
+                              );
+                              Future.delayed(
+                                const Duration(milliseconds: 100),
+                                () {
+                                  setState(() => searchActivate = true);
+                                },
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.grey.shade100,
@@ -140,7 +145,6 @@ class _HomeMobileState extends State<HomeMobile> {
                       itemBuilder: (_, i) {
                         return ChooseMenuButton(
                           text: pages[i],
-                          index: i,
                           isActive: i == index,
                           onTap: () {
                             setState(() {
@@ -172,13 +176,13 @@ class _HomeMobileState extends State<HomeMobile> {
                         }).length,
                   itemBuilder: (_, i) {
                     if (keySearch.isEmpty) {
-                      return CardItem(item: listSearch[i], i: i);
+                      return CardItem(item: listSearch[i]);
                     } else {
                       var item = listSearch.where((element) {
                         return element.name.toLowerCase().contains(keySearch);
                       }).elementAt(i);
 
-                      return CardItem(item: item, i: i);
+                      return CardItem(item: item);
                     }
                   },
                 ),
@@ -214,7 +218,7 @@ class _HomeMobileState extends State<HomeMobile> {
                       return item.name.isNotEmpty;
                     }).elementAt(i);
 
-                    return CardItem(item: item, i: i);
+                    return CardItem(item: item);
                   },
                 ),
               ),

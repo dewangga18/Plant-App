@@ -1,9 +1,13 @@
 import 'package:plant_app/models/plant_model.dart';
 
 class AppState {
-  final List<Plant> _plants = plants;
+  final List<Plant> data = plants;
 
-  get plantList => _plants;
+  get plantList => data;
 
-  likeDislike(int i) => _plants[i].isLike = !_plants[i].isLike;
+  /// handle 
+  likeUnlike(int id) {
+    int i = data.indexWhere((element) => element.id == id);
+    data[i].isLike = !data[i].isLike;
+  }
 }

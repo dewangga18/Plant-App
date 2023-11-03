@@ -3,14 +3,12 @@ import 'package:plant_app/views/components/c_text.dart';
 
 class ChooseMenuButton extends StatelessWidget {
   final String text;
-  final int index;
   final bool isActive;
   final Function() onTap;
 
   const ChooseMenuButton({
     Key? key,
     required this.text,
-    required this.index,
     required this.isActive,
     required this.onTap,
   }) : super(key: key);

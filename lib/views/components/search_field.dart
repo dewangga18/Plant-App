@@ -18,11 +18,14 @@ class SearchField extends StatelessWidget {
       focusNode: focus,
       onChanged: onChanged,
       decoration: InputDecoration(
+        fillColor: Colors.grey.shade100,
+        filled: true,
         contentPadding: const EdgeInsets.symmetric(vertical: 10),
         hintText: 'Search',
         prefixIcon: Icon(
           Icons.search,
           color: Colors.green.shade800,
+          size: 20,
         ),
         suffixIcon: IconButton(
           onPressed: closeTap,

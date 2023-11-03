@@ -8,17 +8,15 @@ class DetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = ModalRoute.of(context)!.settings.arguments as Map;
-    Plant plants = data["data"] as Plant;
-    int i = data["i"] as int;
+    Plant plant = ModalRoute.of(context)!.settings.arguments as Plant;
 
     return Scaffold(
       body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
+        builder: (BuildContext ctx, BoxConstraints constraints) {
           if (constraints.maxWidth < 600) {
-            return DetailMobile(plants: plants, i: i);
+            return DetailMobile(plant: plant);
           } else {
-            return DetailWeb(plants: plants);
+            return DetailWeb(plant: plant);
           }
         },
       ),
@@ -27,8 +25,8 @@ class DetailScreen extends StatelessWidget {
 }
 
 class DetailWeb extends StatelessWidget {
-  final Plant plants;
-  const DetailWeb({Key? key, required this.plants}) : super(key: key);
+  final Plant plant;
+  const DetailWeb({Key? key, required this.plant}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +47,7 @@ class DetailWeb extends StatelessWidget {
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.red),
                         ),
-                        child: Image.asset(plants.imgAsset),
+                        child: Image.asset(plant.imgAsset),
                       ),
                       Positioned(
                         left: 20,
@@ -79,7 +77,7 @@ class DetailWeb extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CText(text: plants.name, size: 20),
+                            CText(text: plant.name, size: 20),
                             const SizedBox(height: 15),
                             // Row(
                             //   children: <Widget>[
@@ -120,7 +118,7 @@ class DetailWeb extends StatelessWidget {
                             ),
                             const SizedBox(height: 15),
                             CText(
-                              text: plants.desc,
+                              text: plant.desc,
                               color: Colors.grey,
                               size: 16,
                             ),
@@ -163,14 +161,9 @@ class DetailWeb extends StatelessWidget {
 }
 
 class DetailMobile extends StatefulWidget {
-  final Plant plants;
-  final int i;
+  final Plant plant;
 
-  const DetailMobile({
-    Key? key,
-    required this.plants,
-    required this.i,
-  }) : super(key: key);
+  const DetailMobile({Key? key, required this.plant}) : super(key: key);
 
   @override
   State<DetailMobile> createState() => _DetailMobileState();
@@ -179,7 +172,23 @@ class DetailMobile extends StatefulWidget {
 class _DetailMobileState extends State<DetailMobile> {
   @override
   Widget build(BuildContext context) {
-    bool isLike = widget.plants.isLike;
+    bool isLike = widget.plant.isLike;
+
+    Color color = Colors.grey.shade700;
+    if (widget.plant.rare == 'a') {
+      color = Colors.indigo;
+    }
+    if (widget.plant.rare == 'b') {
+      color = Colors.deepOrange;
+    }
+
+    String rare = 'Common';
+    if (widget.plant.rare == 'a') {
+      rare = 'Special';
+    }
+    if (widget.plant.rare == 'b') {
+      rare = 'Rare';
+    }
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -188,7 +197,7 @@ class _DetailMobileState extends State<DetailMobile> {
           children: <Widget>[
             Stack(
               children: <Widget>[
-                Image.asset(widget.plants.imgAsset),
+                Image.asset(widget.plant.imgAsset),
                 SafeArea(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -208,6 +217,7 @@ class _DetailMobileState extends State<DetailMobile> {
                           ),
                         ),
                         IconButton(
+                          iconSize: 30,
                           icon: Icon(
                             isLike ? Icons.favorite : Icons.favorite_border,
                             color: Colors.red,
@@ -215,13 +225,13 @@ class _DetailMobileState extends State<DetailMobile> {
                           onPressed: () {
                             setState(() {
                               isLike = !isLike;
-                              AppState().likeDislike(widget.i);
+                              AppState().likeUnlike(widget.plant.id);
                               if (isLike) {
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     backgroundColor: Colors.black,
-                                    duration: Duration(seconds: 2),
+                                    duration: Duration(seconds: 1),
                                     content: CText(
                                       text: 'Adding to saved data',
                                       size: 12,
@@ -234,7 +244,7 @@ class _DetailMobileState extends State<DetailMobile> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     backgroundColor: Colors.black,
-                                    duration: Duration(seconds: 2),
+                                    duration: Duration(seconds: 1),
                                     content: CText(
                                       text: 'Remove to saved data',
                                       size: 12,
@@ -245,7 +255,7 @@ class _DetailMobileState extends State<DetailMobile> {
                               }
                             });
                           },
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -258,76 +268,45 @@ class _DetailMobileState extends State<DetailMobile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   CText(
-                    text: widget.plants.name,
+                    text: widget.plant.name,
                     color: Colors.black,
-                    size: 18,
+                    size: 25,
+                    letterSpacing: 0.8,
                   ),
-                  // Row(
-                  //   children: <Widget>[
-                  //     const Icon(
-                  //       Icons.star,
-                  //       color: Colors.yellow,
-                  //       size: 14,
-                  //     ),
-                  //     const SizedBox(height: 5),
-                  //     CText(
-                  //       text: widget.plants.rating,
-                  //       size: 14,
-                  //     )
-                  //   ],
-                  // ),
-                  const SizedBox(height: 7),
-                  // CText(
-                  //   text: widget.plants.price,
-                  //   size: 17,
-                  //   color: Colors.indigo,
-                  // ),
-                  const SizedBox(height: 7),
-                  // Row(
-                  //   children: [
-                  //     const CText(
-                  //       text: 'Size:   ',
-                  //       weight: FontWeight.bold,
-                  //       size: 16,
-                  //     ),
-                  //     CText(
-                  //       text: widget.plants.size,
-                  //       color: Colors.teal.shade700,
-                  //     ),
-                  //   ],
-                  // ),
+                  const SizedBox(height: 3),
+                  Row(
+                    children: <Widget>[
+                      CText(
+                        text: 'Rare: ',
+                        size: 20,
+                        weight: FontWeight.w400,
+                        color: Colors.grey.shade600,
+                        letterSpacing: 0.8,
+                      ),
+                      const SizedBox(height: 5),
+                      CText(
+                        text: rare,
+                        size: 20,
+                        color: color,
+                        weight: FontWeight.w500,
+                        letterSpacing: 1,
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 7),
                   const CText(
                     text: 'Description',
-                    weight: FontWeight.bold,
+                    weight: FontWeight.w500,
                     size: 20,
                   ),
-                  const SizedBox(height: 7),
+                  const SizedBox(height: 5),
                   CText(
-                    text: widget.plants.desc,
+                    text: widget.plant.desc,
                     color: Colors.grey,
-                    size: 13,
+                    size: 20,
+                    weight: FontWeight.w400,
+                    letterSpacing: 1.2,
                   ),
-                  const SizedBox(height: 30),
-                  // Container(
-                  //   height: 40,
-                  //   width: double.infinity,
-                  //   padding: const EdgeInsets.symmetric(horizontal: 10),
-                  //   child: ElevatedButton(
-                  //     onPressed: () {},
-                  //     style: ElevatedButton.styleFrom(
-                  //       backgroundColor: Colors.green.shade900,
-                  //       shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(10),
-                  //       ),
-                  //     ),
-                  //     child: const CText(
-                  //       text: 'Add to chart ',
-                  //       size: 19,
-                  //       weight: FontWeight.bold,
-                  //     ),
-                  //   ),
-                  // ),
                   const SizedBox(height: 20),
                 ],
               ),

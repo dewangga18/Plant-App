@@ -88,37 +88,39 @@ class _SavedMobileState extends State<SavedMobile> {
               ),
             ),
           ],
-          ListView.separated(
-            separatorBuilder: (_, i) => const SizedBox(height: 15),
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            shrinkWrap: true,
-            itemCount: plants.where((item) => item.isLike).length,
-            itemBuilder: (_, i) {
-              var item = plants.where((data) => data.isLike).elementAt(i);
+          Expanded(
+            child: ListView.separated(
+              separatorBuilder: (_, i) => const SizedBox(height: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              shrinkWrap: true,
+              itemCount: plants.where((item) => item.isLike).length,
+              itemBuilder: (_, i) {
+                var item = plants.where((data) => data.isLike).elementAt(i);
 
-              return SavedItem(
-                item: item,
-                i: i,
-                onTap: () {
-                  setState(() {
-                    AppState().likeUnlike(item.id);
-                    plants = AppState().plantList;
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        backgroundColor: Colors.black,
-                        duration: Duration(seconds: 1),
-                        content: CText(
-                          text: 'Remove to saved data',
-                          size: 12,
-                          color: Colors.white,
+                return SavedItem(
+                  item: item,
+                  i: i,
+                  onTap: () {
+                    setState(() {
+                      AppState().likeUnlike(item.id);
+                      plants = AppState().plantList;
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.black,
+                          duration: Duration(seconds: 1),
+                          content: CText(
+                            text: 'Remove to saved data',
+                            size: 12,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    );
-                  });
-                },
-              );
-            },
+                      );
+                    });
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -126,11 +128,108 @@ class _SavedMobileState extends State<SavedMobile> {
   }
 }
 
-class SavedWeb extends StatelessWidget {
+class SavedWeb extends StatefulWidget {
   const SavedWeb({Key? key}) : super(key: key);
 
   @override
+  State<SavedWeb> createState() => _SavedWebState();
+}
+
+class _SavedWebState extends State<SavedWeb> {
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    bool isEmpty = true;
+
+    for (var item in plants) {
+      if (item.isLike) {
+        isEmpty = false;
+        break;
+      }
+    }
+
+    return Scaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 20),
+                const CText(
+                  text: 'Saved Place for',
+                  size: 15,
+                  weight: FontWeight.w500,
+                ),
+                CText(
+                  text: 'Favourite Plants',
+                  size: 25,
+                  color: Colors.green.shade700,
+                  weight: FontWeight.bold,
+                ),
+              ],
+            ),
+          ),
+          if (isEmpty) ...[
+            SizedBox(height: MediaQuery.of(context).size.height / 2.6),
+            const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CText(
+                    text: 'Ooppss is still empty',
+                    size: 24,
+                    weight: FontWeight.bold,
+                  ),
+                  SizedBox(height: 2),
+                  CText(
+                    text: 'Save your favourite plants in here!',
+                    size: 17,
+                    letterSpacing: 1.2,
+                  ),
+                ],
+              ),
+            ),
+          ],
+          Expanded(
+            child: ListView.separated(
+              separatorBuilder: (_, i) => const SizedBox(height: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              shrinkWrap: true,
+              itemCount: plants.where((item) => item.isLike).length,
+              itemBuilder: (_, i) {
+                var item = plants.where((data) => data.isLike).elementAt(i);
+
+                return SavedItem(
+                  item: item,
+                  i: i,
+                  isMobile: false,
+                  onTap: () {
+                    setState(() {
+                      AppState().likeUnlike(item.id);
+                      plants = AppState().plantList;
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.black,
+                          duration: Duration(seconds: 1),
+                          content: CText(
+                            text: 'Remove to saved data',
+                            size: 12,
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
+                    });
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

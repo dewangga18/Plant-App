@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:plant_app/configs/routes/app_route.dart';
 import 'package:plant_app/models/plant_model.dart';
 import 'package:plant_app/views/components/c_text.dart';
 
@@ -9,10 +8,12 @@ class SavedItem extends StatefulWidget {
     required this.item,
     required this.i,
     required this.onTap,
+    this.isMobile = true,
   });
 
   final Plant item;
   final int i;
+  final bool isMobile;
   final Function() onTap;
 
   @override
@@ -31,18 +32,8 @@ class _SavedItemState extends State<SavedItem> {
       color = Colors.deepOrange;
     }
 
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          AppRoute.detail,
-          arguments: {
-            'data': widget.item,
-            'i': widget.i,
-          },
-        );
-      },
-      child: Container(
+    if (widget.isMobile) {
+      return Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
@@ -103,7 +94,70 @@ class _SavedItemState extends State<SavedItem> {
             ),
           ],
         ),
-      ),
-    );
+      );
+    } else {
+      return Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              color.withOpacity(0.11),
+              color.withOpacity(0.3),
+            ],
+          ),
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              height: 140,
+              width: 140,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  widget.item.imgAsset,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.low,
+                ),
+              ),
+            ),
+            const SizedBox(width: 25),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CText(
+                    text: widget.item.name,
+                    size: 30,
+                    weight: FontWeight.bold,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  CText(
+                    text: widget.item.desc,
+                    size: 20,
+                    weight: FontWeight.w400,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 25),
+            IconButton(
+              iconSize: 35,
+              icon: Icon(
+                widget.item.isLike ? Icons.favorite : Icons.favorite_border,
+                color: Colors.red,
+              ),
+              onPressed: widget.onTap,
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

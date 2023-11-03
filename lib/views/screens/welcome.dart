@@ -10,7 +10,6 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
-        /// separated view
         if (constraints.maxWidth < 600 ) {
           return _mainMobile(context);
         } else {

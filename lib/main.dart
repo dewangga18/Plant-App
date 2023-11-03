@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
       ),
       routes: AppRoute.routes(context),
-      initialRoute: AppRoute.dashboard,
+      initialRoute: AppRoute.welcome,
     );
   }
 }
